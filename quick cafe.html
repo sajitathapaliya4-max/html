@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Cafe - Campus Canteen Management System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-white">
+
+    <!-- Top Notification Banner -->
+    <div class="bg-amber-500 text-white text-xs font-semibold py-1.5 px-4 text-center">
+        🎓 Campus Minor Project Frontend — Quick Cafe (QC Canteen System)
+    </div>
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-md shadow-amber-200">
+                    <i class="fa-solid fa-mug-hot"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-tight text-slate-900">Quick<span class="text-amber-500">Cafe</span></span>
+                    <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest -mt-1">Canteen Portal</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
+                <a href="#menu" class="hover:text-amber-500 transition-colors">Menu & Items</a>
+                <a href="#how-it-works" class="hover:text-amber-500 transition-colors">How it Works</a>
+                <a href="#about" class="hover:text-amber-500 transition-colors">Project Info</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <button id="cartBtn" onclick="toggleCart(true)" class="relative bg-amber-50 hover:bg-amber-100 text-amber-700 px-4 py-2 rounded-full font-bold text-sm transition flex items-center space-x-2">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Cart</span>
+                    <span id="cartCount" class="bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full font-extrabold ml-1">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-b from-amber-500/10 via-amber-50/30 to-slate-50 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center space-y-4">
+            <span class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full tracking-wider uppercase shadow-sm">Skip the Canteen Queue</span>
+            <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                Order Campus Snacks & Lunch <span class="text-amber-500">In Seconds</span>
+            </h1>
+            <p class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto">
+                Select your items, place your order digitally, and collect directly from the canteen counter using your unique token number!
+            </p>
+        </div>
+    </section>
+
+    <!-- Category Filter & Search Section -->
+    <section id="menu" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <!-- Search Box -->
+            <div class="relative w-full md:w-80">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" oninput="filterMenu()" placeholder="Search chowmein, coffee, snacks..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white text-sm shadow-sm transition">
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-2 md:pb-0">
+                <button onclick="setCategory('all')" class="cat-btn active bg-amber-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition whitespace-nowrap shadow-sm">All Items</button>
+                <button onclick="setCategory('snacks')" class="cat-btn bg-white hover:bg-slate-100 text-slate-600 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition whitespace-nowrap shadow-sm">Snacks</button>
+                <button onclick="setCategory('beverages')" class="cat-btn bg-white hover:bg-slate-100 text-slate-600 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition whitespace-nowrap shadow-sm">Beverages</button>
+                <button onclick="setCategory('meals')" class="cat-btn bg-white hover:bg-slate-100 text-slate-600 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition whitespace-nowrap shadow-sm">Main Meals</button>
+            </div>
+        </div>
+
+        <!-- Menu Grid -->
+        <div id="menuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Items rendered dynamically via JavaScript -->
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="bg-white py-16 border-t border-slate-200/60 my-12 shadow-inner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-xl mx-auto mb-12">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">How Quick Cafe Works</h2>
+                <p class="text-sm text-slate-500 mt-1">Simple 3-step digital token ordering process</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-sm">1</div>
+                    <h3 class="font-bold text-lg mb-1 text-slate-800">Select Items</h3>
+                    <p class="text-sm text-slate-500">Browse through available canteen snacks, fresh beverages, and daily lunch specials.</p>
+                </div>
+                <div class="text-center p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-sm">2</div>
+                    <h3 class="font-bold text-lg mb-1 text-slate-800">Confirm Order</h3>
+                    <p class="text-sm text-slate-500">Review your cart summary, enter your student name and roll number/department.</p>
+                </div>
+                <div class="text-center p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-sm">3</div>
+                    <h3 class="font-bold text-lg mb-1 text-slate-800">Pickup at Counter</h3>
+                    <p class="text-sm text-slate-500">Receive your instant digital token number and collect your order directly when ready.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide-over Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex justify-end">
+        <div class="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between animate-fade">
+            <!-- Cart Header -->
+            <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-basket-shopping text-amber-500"></i>
+                    <h2 class="text-lg font-bold text-slate-800">Your Canteen Order</h2>
+                </div>
+                <button onclick="toggleCart(false)" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cartItemList" class="p-4 flex-1 overflow-y-auto divide-y divide-slate-100">
+                <!-- Dynamic Items -->
+            </div>
+
+            <!-- Cart Footer -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-4">
+                <div class="space-y-1.5 text-sm">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Subtotal</span>
+                        <span id="subtotalPrice">Rs. 0</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Digital Token Fee</span>
+                        <span class="text-green-600 font-semibold">FREE</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-slate-900 text-base pt-2 border-t">
+                        <span>Total Amount</span>
+                        <span id="totalPrice" class="text-amber-600">Rs. 0</span>
+                    </div>
+                </div>
+
+                <!-- Checkout Form -->
+                <div class="space-y-2.5 pt-2">
+                    <input type="text" id="studentName" placeholder="Student Full Name" class="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white">
+                    <input type="text" id="rollNo" placeholder="Roll Number / Department" class="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white">
+                </div>
+
+                <button onclick="placeOrder()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-amber-200 transition">
+                    Place Token Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl animate-fade">
+            <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-2xl mx-auto shadow-sm">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800">Order Placed Successfully!</h3>
+            <p class="text-xs text-slate-500 leading-relaxed">Your token number is <span id="tokenNumber" class="font-extrabold text-amber-600 text-sm">#0000</span>. Please present this at the campus canteen counter to collect your order.</p>
+            <button onclick="closeSuccessModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl transition text-sm shadow-md">
+                Back to Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="about" class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="text-sm font-bold text-slate-200">Quick Cafe — Campus Canteen Management System</p>
+            <p class="text-xs text-slate-500">College Minor Project Frontend | Built with HTML, Tailwind CSS & JavaScript</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Canteen Database / Menu Items
+        const menuData = [
+            { id: 1, name: "Veg Chowmein", category: "meals", price: 120, image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=400&q=80" },
+            { id: 2, name: "Chicken Momo", category: "meals", price: 150, image: "https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?auto=format&fit=crop&w=400&q=80" },
+            { id: 3, name: "Cold Coffee", category: "beverages", price: 90, image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=400&q=80" },
+            { id: 4, name: "Samosa (2 pcs)", category: "snacks", price: 40, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80" },
+            { id: 5, name: "Masala Tea", category: "beverages", price: 25, image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=400&q=80" },
+            { id: 6, name: "Grilled Sandwich", category: "snacks", price: 80, image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=400&q=80" },
+            { id: 7, name: "Egg Roll", category: "snacks", price: 70, image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=400&q=80" },
+            { id: 8, name: "Fresh Lemonade", category: "beverages", price: 50, image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80" }
+        ];
+
+        let cart = [];
+        let activeCategory = 'all';
+
+        // Render Menu Grid based on Category and Search
+        function renderMenu() {
+            const grid = document.getElementById('menuGrid');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            
+            const filtered = menuData.filter(item => {
+                const matchesCat = activeCategory === 'all' || item.category === activeCategory;
+                const matchesSearch = item.name.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400 font-medium bg-white rounded-2xl border border-slate-100">No canteen items found matching your search.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition flex flex-col justify-between group">
+                    <div class="relative h-44 overflow-hidden bg-slate-100">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-md text-slate-700 text-[10px] font-extrabold uppercase px-2 py-1 rounded-md tracking-wider border border-slate-200/50 shadow-sm">${item.category}</span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">${item.name}</h3>
+                            <p class="text-amber-600 font-extrabold text-sm mt-0.5">Rs. ${item.price}</p>
+                        </div>
+                        <button onclick="addToCart(${item.id})" class="w-full bg-slate-900 hover:bg-amber-500 text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2 shadow-sm">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>Add to Order</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Set Active Category
+        function setCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600');
+            });
+            event.target.classList.remove('bg-white', 'text-slate-600');
+            event.target.classList.add('bg-amber-500', 'text-white', 'shadow-sm');
+            renderMenu();
+        }
+
+        // Search Filter
+        function filterMenu() {
+            renderMenu();
+        }
+
+        // Add Item to Cart
+        function addToCart(id) {
+            const item = menuData.find(i => i.id === id);
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            updateCartUI();
+        }
+
+        // Change Item Quantity in Cart
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            updateCartUI();
+        }
+
+        // Update Cart Drawer UI & Counters
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalCost = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            document.getElementById('cartCount').innerText = totalItems;
+            document.getElementById('subtotalPrice').innerText = `Rs. ${totalCost}`;
+            document.getElementById('totalPrice').innerText = `Rs. ${totalCost}`;
+
+            const cartList = document.getElementById('cartItemList');
+            if (cart.length === 0) {
+                cartList.innerHTML = `<div class="text-center py-16 text-slate-400 text-sm font-medium">Your canteen cart is empty</div>`;
+                return;
+            }
+
+            cartList.innerHTML = cart.map(item => `
+                <div class="py-3.5 flex items-center justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
+                        <p class="text-xs text-slate-400">Rs. ${item.price} × ${item.qty}</p>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-slate-100 rounded-xl p-1 shadow-inner">
+                        <button onclick="changeQty(${item.id}, -1)" class="w-7 h-7 bg-white rounded-lg text-slate-600 font-bold shadow-sm flex items-center justify-center text-xs hover:bg-slate-50 transition">-</button>
+                        <span class="text-xs font-bold px-1.5">${item.qty}</span>
+                        <button onclick="changeQty(${item.id}, 1)" class="w-7 h-7 bg-white rounded-lg text-slate-600 font-bold shadow-sm flex items-center justify-center text-xs hover:bg-slate-50 transition">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Open/Close Cart Drawer
+        function toggleCart(open) {
+            const drawer = document.getElementById('cartDrawer');
+            if (open) {
+                drawer.classList.remove('hidden');
+            } else {
+                drawer.classList.add('hidden');
+            }
+        }
+
+        // Place Order Action
+        function placeOrder() {
+            if (cart.length === 0) {
+                alert("Please add items to your order first.");
+                return;
+            }
+            const name = document.getElementById('studentName').value.trim();
+            const roll = document.getElementById('rollNo').value.trim();
+            if (!name || !roll) {
+                alert("Please enter both Student Name and Roll Number / Department.");
+                return;
+            }
+
+            const token = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('tokenNumber').innerText = `#${token}`;
+            
+            // Clear Cart & Form Inputs
+            cart = [];
+            document.getElementById('studentName').value = '';
+            document.getElementById('rollNo').value = '';
+            updateCartUI();
+            toggleCart(false);
+
+            // Open Success Modal
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        // Close Success Modal
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        // Initialize App on Load
+        renderMenu();
+    </script>
+</body>
+</html>
